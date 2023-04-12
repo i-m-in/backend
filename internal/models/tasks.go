@@ -20,5 +20,6 @@ func (model *Task) GetTasksService() ([]Task, error) {
 }
 
 func (model *Task) GetTaskByIdService() error {
+	// model := Task{id: 5, title:"", description:""}
 
 }
