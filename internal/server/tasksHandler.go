@@ -2,35 +2,28 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/melnk300/CalendarBack/internal/models"
 	"net/http"
 	"strconv"
 )
 
-func GetAllTasks(w http.ResponseWriter, r *http.Request) {
-	var task models.Task = models.Task{}
-	tasks, err := task.GetTasksService()
+func getTasks(w http.ResponseWriter, r *http.Request) {
+	var Task models.Task
+
+	userId, _ := strconv.Atoi(mux.Vars(r)["user_id"])
+
+	tasks, err := Task.GetTasks(userId)
+
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		switch err.Error() {
+		case "tasks not found":
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(tasks)
-}
-
-func GetTaskById(w http.ResponseWriter, r *http.Request) {
-	task := models.Task{}
-	task.Id, _ = strconv.Atoi(mux.Vars(r)["taskId"]) // 5
-	if task.Id <= 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	err := task.GetTaskByIdService()
-	if err != nil {
-		return
-	}
 }

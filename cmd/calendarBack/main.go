@@ -6,6 +6,7 @@ import (
 	"github.com/melnk300/CalendarBack/internal/models"
 	"github.com/melnk300/CalendarBack/internal/server"
 	"github.com/melnk300/CalendarBack/pkg/db"
+	"github.com/melnk300/CalendarBack/utils"
 	"log"
 	"os"
 )
@@ -23,6 +24,7 @@ func main() {
 	user, _ := os.LookupEnv("POSTGRES_USER")
 	password, _ := os.LookupEnv("POSTGRES_PASSWORD")
 	stage, _ := os.LookupEnv("STAGE")
+	salt, _ := os.LookupEnv("SALT")
 
 	dbCfg := db.Config{
 		Host:     "127.0.0.1",
@@ -33,6 +35,10 @@ func main() {
 	srvCfg := server.Config{
 		Host: "",
 		Port: "8080",
+	}
+
+	_ = utils.Config{
+		Salt: salt,
 	}
 
 	// INFO: init DB

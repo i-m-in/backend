@@ -6,11 +6,16 @@ import (
 )
 
 func initRoute() *mux.Router {
-	r := mux.NewRouter() // localhost:8080
+	r := mux.NewRouter()
+	r.Use(mux.CORSMethodMiddleware(r))
 
-	tasks := r.PathPrefix("/tasks").Subrouter()                                // localhost:8080/tasks
-	tasks.HandleFunc("", GetAllTasks).Methods(http.MethodGet)                  // localhost:8080/tasks/
-	tasks.HandleFunc("{taskId:-?[0-9]+}", GetTaskById).Methods(http.MethodGet) // localhost:8080/tasks/1, localhost:8080/tasks/42, localhost:8080/tasks/0, localhost:8080/tasks/-42
+	//r.Path("/tasks/{user_id}").Queries("page").HandlerFunc(getTasks).Methods(http.MethodGet)
+	//r.Path("/tasks/{user_id}").Queries("date").HandlerFunc(getTasks).Methods(http.MethodGet)
+	r.Path("/tasks/{user_id}").HandlerFunc(getTasks).Methods(http.MethodGet)
+
+	r.HandleFunc("/users/reg", registerUser).Methods(http.MethodPost)
+	r.HandleFunc("/users/{user_id}", getUser).Methods(http.MethodGet)
+	r.HandleFunc("/users/{user_id}/friends", getFriends).Methods(http.MethodGet)
 
 	return r
 }
